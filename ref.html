@@ -3,11 +3,34 @@
 </head>
 
 <body>
-  {{> hello}}
+  <div>{{> navbar}}</div>
+  <div>{{> entry}}</div>
+  <div>{{> posts}}</div>
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+<template name="navbar">
+  <h1>ref</h1>
+  {{loginButtons}}
+</template>
+
+<template name="entry">
+  {{#if currentUser}}
+    <p><input type="text" id="title" placeholder="Title here..."/></p>
+    <p><textarea id="content" placeholder="Content here..."/></textarea></p>
+  {{/if}}
+</template>
+
+<template name="posts">
+  {{#each posts}}
+    {{> post}}
+  {{/each}}
+</template>
+
+<template name="post">
+  <p>{{getScore}} <strong>{{title}}</strong> {{createdDatetime}}</p>
+  <p>{{content}}</p>
+  <p>
+    <input type="button" class="up" value="UP" />
+    <input type="button" class="down" value="DOWN" />
+  </p>
 </template>
