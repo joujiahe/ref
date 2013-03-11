@@ -31,28 +31,32 @@ if (Meteor.isClient) {
     };
   };
 
-  Template.entry.events = {};
-  Template.entry.events[entry_event('#tags')] = entry_event_handler({
-    ok: function(evt) {
-      var titleEntry = document.getElementById('title');
-      var contentEntry = document.getElementById('content');
-      var tagsEntry = document.getElementById('tags');
-      var time = Date.now() / 1000;
-      Posts.insert({
-        userId: Meteor.userId(),
-        title: titleEntry.value,
-        content: contentEntry.value,
-        tags: tagsEntry.value? tagsEntry.value.split(','): [],
-        createdAt: time
-      });
-      titleEntry.value = '';
-      contentEntry.value = '';
-      tagsEntry.value = '';
-    }
+  var post_submit = function(){
+    var titleEntry = document.getElementById('title');
+    var contentEntry = document.getElementById('content');
+    var tagsEntry = document.getElementById('tags');
+    var time = Date.now() / 1000;
+    Posts.insert({
+      userId: Meteor.userId(),
+      title: titleEntry.value,
+      content: contentEntry.value,
+      tags: tagsEntry.value? tagsEntry.value.split(','): [],
+      createdAt: time
+    });
+    titleEntry.value = '';
+    contentEntry.value = '';
+    tagsEntry.value = '';
+  };
+
+  //Template.entry.events = {};
+  //Template.entry.events[entry_event('#tags')] = entry_event_handler({
+  Template.entry.events({
+    //ok: function(evt) {
+    'click .submit': post_submit,
   });
 
   Template.post.createdDatetime = function() {
-    var dt = new Date(this.createdAt*1000);
+    var dt = new Date(this.createdAt * 1000);
     return dt.toLocaleString();
     //return dt.toDateString()+' '+dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds();
   }
@@ -62,10 +66,10 @@ if (Meteor.isClient) {
   }
 
   Template.post.events({
-    'click .up': function(){
+    'click .up': function() {
       Posts.update(this._id, {$inc: {score: 1}});
     },
-    'click .down': function(){
+    'click .down': function() {
       Posts.update(this._id, {$inc: {score: -1}});
     }
   });
