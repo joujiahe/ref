@@ -10,13 +10,28 @@
 
 <template name="navbar">
   <h1>ref</h1>
+  <div id="top-tag-filter">
+    {{> tag_filter}}
+  </div>
   {{loginButtons}}
+</template>
+
+<template name="tag_filter">
+  <div id="tag-filter" class="tag-list">
+    <div class="label">Show:</div>
+    {{#each tags}}
+      <div class="tag {{selected}}">
+        {{tag_text}} <span class="count">({{count}})</span>
+      </div>
+    {{/each}}
+  </div>
 </template>
 
 <template name="entry">
   {{#if currentUser}}
     <p><input type="text" id="title" placeholder="Title here..."/></p>
     <p><textarea id="content" placeholder="Content here..."/></textarea></p>
+    <p><input type="text" id="tags" placeholder="Tags here..."/></p>
   {{/if}}
 </template>
 
@@ -29,6 +44,7 @@
 <template name="post">
   <p>{{getScore}} <strong>{{title}}</strong> {{createdDatetime}}</p>
   <p>{{content}}</p>
+  <p>{{tags}}</p>
   <p>
     <input type="button" class="up" value="UP" />
     <input type="button" class="down" value="DOWN" />

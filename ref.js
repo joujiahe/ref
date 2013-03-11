@@ -21,9 +21,10 @@ if (Meteor.isClient) {
         cancel.call(this, evt);
       } else if (evt.type === 'keyup' && evt.which == 13 ) {
         // blur/return/enter is ok if not empty
-        var value = String(evt.target.value || '');
-        if (value)
-          ok.call(this, value, evt);
+        var title = String(document.getElementById('title').value || '');
+        var content = String(document.getElementById('content').value || '');
+        if (title&&content)
+          ok.call(this, evt);
         else
           cancel.call(this, evt);
       }
@@ -31,13 +32,22 @@ if (Meteor.isClient) {
   };
 
   Template.entry.events = {};
-  Template.entry.events[entry_event('#content')] = entry_event_handler({
-    ok: function(text, evt) {
+  Template.entry.events[entry_event('#tags')] = entry_event_handler({
+    ok: function(evt) {
       var titleEntry = document.getElementById('title');
+      var contentEntry = document.getElementById('content');
+      var tagsEntry = document.getElementById('tags');
       var time = Date.now() / 1000;
-      Posts.insert({userId: Meteor.userId(), title: titleEntry.value, content: text, createdAt: time});
+      Posts.insert({
+        userId: Meteor.userId(),
+        title: titleEntry.value,
+        content: contentEntry.value,
+        tags: tagsEntry.value? tagsEntry.value.split(','): [],
+        createdAt: time
+      });
       titleEntry.value = '';
-      evt.target.value = '';
+      contentEntry.value = '';
+      tagsEntry.value = '';
     }
   });
 
@@ -57,6 +67,45 @@ if (Meteor.isClient) {
     },
     'click .down': function(){
       Posts.update(this._id, {$inc: {score: -1}});
+    }
+  });
+
+  // Tags
+  Template.tag_filter.tags = function () {
+    var tag_infos = [];
+    var total_count = 0;
+
+    Posts.find({}).forEach(function (post) {
+      _.each(post.tags, function (tag) {
+        var tag_info = _.find(tag_infos, function (x) { return x.tag === tag; });
+        if (!tag_info)
+          tag_infos.push({tag: tag, count: 1});
+        else
+          tag_info.count++;
+      });
+      total_count++;
+    });
+
+    tag_infos = _.sortBy(tag_infos, function (x) { return x.tag; });
+    tag_infos.unshift({tag: null, count: total_count});
+
+    return tag_infos;
+  };
+
+  Template.tag_filter.tag_text = function () {
+    return this.tag || "All items";
+  };
+
+  Template.tag_filter.selected = function () {
+    return Session.equals('tag_filter', this.tag) ? 'selected' : '';
+  };
+
+  Template.tag_filter.events({
+    'mousedown .tag': function () {
+      if (Session.equals('tag_filter', this.tag))
+        Session.set('tag_filter', null);
+      else
+        Session.set('tag_filter', this.tag);
     }
   });
 }
