@@ -1,6 +1,23 @@
 Posts = new Meteor.Collection('posts');
 
+Posts.allow({
+  insert: function(userId, doc) {
+    return userId;
+  },
+});
+
 if (Meteor.isClient) {
+
+  var postsHandle = null;
+  // Always be subscribed to the todos for the selected list.
+  Meteor.autorun(function () {
+    postsHandle = Meteor.subscribe('posts');
+  });
+
+  Template.posts.loading = function () {
+    return postsHandle && !postsHandle.ready();
+  };
+
   // Posts
   Template.posts.posts = function(){
     return Posts.find({}, {sort: {createdAt: -1}});
@@ -115,6 +132,9 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+  Meteor.publish('posts', function(){
+    return Posts.find();
+  });
   Meteor.startup(function () {
     // code to run on server at startup
   });

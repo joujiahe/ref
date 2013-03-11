@@ -37,9 +37,13 @@
 </template>
 
 <template name="posts">
+  {{#if loading}}
+    Loading...
+  {{else}}
   {{#each posts}}
     {{> post}}
   {{/each}}
+  {{/if}}
 </template>
 
 <template name="post">
