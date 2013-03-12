@@ -4,12 +4,17 @@
  *   title: String of post title.
  *   content: String of post content.
  *   tags: Array of post's tags.
+ *   score: Integer of post votes.
+ *   scoredUsers: Array of voted users.
  *   createdAt: Timestamp of creation time.
  */
 Posts = new Meteor.Collection('posts');
 
 Posts.allow({
   insert: function(userId, doc) {
+    return userId;
+  },
+  update: function(userId, docs, fieldNames, modifier) {
     return userId;
   },
 });
@@ -65,6 +70,8 @@ if (Meteor.isClient) {
       title: titleEntry.value,
       content: contentEntry.value,
       tags: tagsEntry.value? tagsEntry.value.split(','): [],
+      score: 0,
+      scoredUsers: [],
       createdAt: time
     });
     titleEntry.value = '';
@@ -117,10 +124,26 @@ if (Meteor.isClient) {
 
   Template.post.events({
     'click .up': function() {
-      Posts.update(this._id, {$inc: {score: 1}});
+      if(!this.scoredUsers) {
+        this.scoredUsers = [];
+      }
+      else if($.inArray(Meteor.userId(), this.scoredUsers)!=-1) {
+        alert('You already voted!');
+        return false;
+      }
+      
+      Posts.update(this._id, {$inc: {score: 1}, $addToSet: {scoredUsers: Meteor.userId()}});
     },
     'click .down': function() {
-      Posts.update(this._id, {$inc: {score: -1}});
+      if(!this.scoredUsers) {
+        this.scoredUsers = [];
+      }
+      else if($.inArray(Meteor.userId(), this.scoredUsers)!=-1) {
+        alert('You already voted!');
+        return false;
+      }
+
+      Posts.update(this._id, {$inc: {score: -1}, $addToSet: {scoredUsers: Meteor.userId()}});
     }
   });
 
