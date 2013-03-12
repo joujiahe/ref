@@ -1,3 +1,11 @@
+/**
+ * Post Document Structure:
+ *   userId: Post owner id.
+ *   title: String of post title.
+ *   content: String of post content.
+ *   tags: Array of post's tags.
+ *   createdAt: Timestamp of creation time.
+ */
 Posts = new Meteor.Collection('posts');
 
 Posts.allow({
@@ -7,7 +15,6 @@ Posts.allow({
 });
 
 if (Meteor.isClient) {
-
   var postsHandle = null;
   // Always be subscribed to the todos for the selected list.
   Meteor.autorun(function () {
@@ -75,6 +82,32 @@ if (Meteor.isClient) {
   Template.post.createdDatetime = function() {
     var dt = new Date(this.createdAt * 1000);
     return dt.toLocaleString();
+    //return dt.toDateString()+' '+dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds();
+  }
+
+  Template.post.createdTimeFromNow = function() {
+    var dt = new Date(this.createdAt * 1000);
+    var nTotalDiff = new Date(Date.now() - dt.getTime());
+    var oDiff = new Object();
+
+    oDiff.days = Math.floor(nTotalDiff/1000/60/60/24);
+    nTotalDiff -= oDiff.days*1000*60*60*24;
+    if(oDiff.days > 7)
+      return dt.toLocaleString();
+
+    oDiff.hours = Math.floor(nTotalDiff/1000/60/60);
+    nTotalDiff -= oDiff.hours*1000*60*60;
+
+    oDiff.minutes = Math.floor(nTotalDiff/1000/60);
+    nTotalDiff -= oDiff.minutes*1000*60;
+
+    oDiff.seconds = Math.floor(nTotalDiff/1000);
+
+    var diff = oDiff.days? oDiff.days+' days ' : '';
+    diff += oDiff.hours? oDiff.hours+' hours ' : '';
+    diff += oDiff.minutes? oDiff.minutes+' minutes ' : '';
+    diff += oDiff.seconds? oDiff.seconds+' seconds ago' : '';
+    return diff;
     //return dt.toDateString()+' '+dt.getHours()+':'+dt.getMinutes()+':'+dt.getSeconds();
   }
 
