@@ -77,10 +77,13 @@ Template.post.createdTimeFromNow = function() {
   var dt = new Date(this.createdAt * 1000);
   var nTotalDiff = new Date(Date.now() - dt.getTime());
   var oDiff = new Object();
+  
+  if (nTotalDiff < 0)
+    nTotalDiff =0;
 
   oDiff.days = Math.floor(nTotalDiff/1000/60/60/24);
   nTotalDiff -= oDiff.days*1000*60*60*24;
-  if(oDiff.days > 7)
+  if (oDiff.days > 7)
     return dt.toLocaleString();
 
   oDiff.hours = Math.floor(nTotalDiff/1000/60/60);
