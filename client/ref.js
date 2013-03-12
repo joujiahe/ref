@@ -105,6 +105,10 @@ Template.post.getScore = function(score) {
 
 Template.post.events({
   'click .up': function() {
+    if(!Meteor.userId()) {
+      alert('Please login first!');
+      return false;
+    }
     if(!this.scoredUsers) {
       this.scoredUsers = [];
     }
@@ -116,6 +120,10 @@ Template.post.events({
     Posts.update(this._id, {$inc: {score: 1}, $addToSet: {scoredUsers: Meteor.userId()}});
   },
   'click .down': function() {
+    if(!Meteor.userId()) {
+      alert('Please login first!');
+      return false;
+    }
     if(!this.scoredUsers) {
       this.scoredUsers = [];
     }

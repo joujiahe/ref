@@ -3,36 +3,57 @@
 </head>
 
 <body>
-  <div>{{> navbar}}</div>
-  <div>{{> entry}}</div>
-  <div>{{> posts}}</div>
+  {{> navbar}}
+  <div class="container">
+    <div class="row">
+    <div class="span12">
+      <div class="row">
+      <div class="span10">
+        <div class="row">
+          <div class="span9">
+            {{> posts}}
+          </div>
+        </div>
+      </div>
+      <div class="span2">
+        <div class="entry-form pull-right">{{> entry}}</div>
+      </div>
+      </div>
+    </div>
+    </div>
+  </div>
 </body>
 
 <template name="navbar">
-  <h1>ref</h1>
-  <div id="top-tag-filter">
-    {{> tag_filter}}
+  <div class="navbar  navbar-fixed-top">
+    <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#"><h1>ref</h1></a>
+      <ul class="nav">
+        {{> tag_filter}}
+      </ul>
+      <div class="login-button pull-right">
+        {{loginButtons align="right"}}
+      </div>
+    </div>
+    </div>
   </div>
-  {{loginButtons}}
 </template>
 
 <template name="tag_filter">
-  <div id="tag-filter" class="tag-list">
-    <div class="label">Show:</div>
-    {{#each tags}}
-      <div class="tag {{selected}}">
-        {{tag_text}} <span class="count">({{count}})</span>
-      </div>
-    {{/each}}
-  </div>
+  {{#each tags}}
+    <li class="{{selected}}">
+      <a>{{tag_text}} <span class="count">({{count}})</span></a>
+    </li>
+  {{/each}}
 </template>
 
 <template name="entry">
   {{#if currentUser}}
     <p><input type="text" id="title" placeholder="Title here..."/></p>
-    <p><textarea id="content" placeholder="Content here..."/></textarea></p>
+    <p><textarea id="content" placeholder="URL here..."/></textarea></p>
     <p><input type="text" id="tags" placeholder="Tags here..."/></p>
-    <input type="button" class="submit" value="Submit" />
+    <a class="submit btn" value="Submit">Submit</a>
   {{/if}}
 </template>
 
@@ -47,12 +68,20 @@
 </template>
 
 <template name="post">
-  <p>{{getScore}} <strong>{{title}}</strong> {{createdTimeFromNow}}</p>
-  <p>{{content}}</p>
-  <p>{{tags}}</p>
-  <p>
-    <input type="button" class="up" value="Up" />
-    <input type="button" class="down" value="Down" />
-    {{scoredUsers}}
-  </p>
+  <div class="post well">
+    <div class="score-buttons pull-left">
+      <a class="btn btn-danger btn-small"><i class="up icon-thumbs-up" value="Up" /></i></a><br />
+      {{getScore}} <br />
+      <a class="btn btn-warning btn-small"><i class="down icon-thumbs-down" value="Down" /></i></a><br />
+    </div>
+    <div class="post-content">
+      <p><a href="{{content}}" target="_blank"><strong>{{title}}</strong></a> <sub><i>{{createdTimeFromNow}}</i></sub></p>
+      <p>{{content}}</p>
+      {{#if tags}}
+      <i>{{tags}}</i>
+      {{else}}
+      <i>No tags</i>
+      {{/if}}
+    </div>
+  </div>
 </template>

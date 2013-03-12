@@ -1,1 +1,41 @@
 /* CSS declarations go here */
+
+/* General style */
+.login-button {
+	padding-top: 20px;
+}
+
+.entry-form {
+}
+
+.post {
+}
+
+.post-content {
+	margin-left: 50px;
+}
+
+.score-buttons {
+	text-align: center;
+}
+
+/* Overide bootstrap style */
+body {
+  padding-top: 80px;
+}
+
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+.navbar .brand {
+	font-size: 20px;
+	margin: 0;
+	padding: 0;
+}
+
+.navbar .nav {
+	padding-top: 15px;
+}
