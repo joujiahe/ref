@@ -1,10 +1,18 @@
 /**
  * Client side js.
  */
+Session.set("queryLimitOffset", 130);
+Session.set("queryLimit", ($(window).height()/Session.get("queryLimitOffset"))|0);
+
 var postsHandle = null;
 // Always be subscribed to the todos for the selected list.
 Meteor.autorun(function () {
   postsHandle = Meteor.subscribe('posts');
+  $(window).scroll(function(evt){
+    current = ($(window).height()+$(window).scrollTop())/Session.get("queryLimitOffset");
+    if (Session.get("queryLimit") < current)
+      Session.set("queryLimit", current);
+  });
 });
 
 Template.posts.loading = function () {
@@ -13,7 +21,7 @@ Template.posts.loading = function () {
 
 // Posts
 Template.posts.posts = function(){
-  return Posts.find({}, {sort: {createdAt: -1}});
+  return Posts.find({}, {limit: Session.get("queryLimit"), sort: {createdAt: -1}});
 };
 
 // Return an event map for a text input.
@@ -155,10 +163,11 @@ Template.tag_filter.tags = function () {
     total_count++;
   });
 
-  tag_infos = _.sortBy(tag_infos, function (x) { return x.tag; });
+  //tag_infos = _.sortBy(tag_infos, function (x) { return -x.count; });
+  tag_infos = _.sortBy(tag_infos, function () { return 0.5 - Math.random(); });
   tag_infos.unshift({tag: null, count: total_count});
 
-  return tag_infos;
+  return tag_infos.slice(0,6);
 };
 
 Template.tag_filter.tag_text = function () {

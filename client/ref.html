@@ -30,7 +30,7 @@
     <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="#"><h1>ref<sub class="label">beta</sub></h1></a>
-      <ul class="nav">
+      <ul class="nav span9">
         {{> tag_filter}}
       </ul>
       <div class="login-button pull-right">
@@ -47,6 +47,7 @@
       <a>{{tag_text}} <span class="count">({{count}})</span></a>
     </li>
   {{/each}}
+  <li><a>...</a></li>
 </template>
 
 <template name="entry">
