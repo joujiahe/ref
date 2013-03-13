@@ -91,7 +91,13 @@
       <a class="down btn btn-warning btn-small"><i class="icon-thumbs-down" value="Down" /></i></a><br />
     </div>
     <div class="post-content">
-      <p><a href="{{content}}" target="_blank"><strong>{{title}}</strong></a> <sub><i>{{createdTimeFromNow}}</i></sub></p>
+      <p>
+        {{#if isUrl}}
+        <a href="{{content}}" target="_blank"><strong>{{title}}</strong> <i class="icon-globe"></a></i><sub><i>{{createdTimeFromNow}}</i></sub>
+        {{else}}
+        <strong>{{title}}</strong></a> <sub><i>{{createdTimeFromNow}}</i>
+	{{/if}}
+      </p>
       <p>{{content}}</p>
       <p class="post-infos">
         <i class="icon-comment"></i>

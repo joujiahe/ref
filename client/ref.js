@@ -35,6 +35,10 @@ Template.post.inArray = function (tags) {
   return result;
 };
 
+Template.post.isUrl = function() {
+  return (this.content.substr(0, 7) == "http://" || this.content.substr(0, 8) == "https://");
+}
+
 Template.post.events({
   'mousedown .tag': function () {
     if (Session.equals('tagFilter', this.value))
