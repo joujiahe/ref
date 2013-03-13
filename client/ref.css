@@ -16,6 +16,25 @@
 	word-wrap: break-word;
 }
 
+.post-infos {
+	color: #888;
+	border-top: 1px dashed #999;
+	margin: 0;
+	padding-top: 10px;
+}
+
+.post-infos .icon-tag {
+	margin-left: 20px;
+}
+
+.post-infos .tags-list {
+}
+
+.post-infos .tag:hover {
+	color: #000;
+	font-weight: bold;
+}
+
 .score-buttons {
 	text-align: center;
 }

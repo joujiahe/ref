@@ -93,11 +93,20 @@
     <div class="post-content">
       <p><a href="{{content}}" target="_blank"><strong>{{title}}</strong></a> <sub><i>{{createdTimeFromNow}}</i></sub></p>
       <p>{{content}}</p>
-      {{#if tags}}
-      <i>{{tags}}</i>
-      {{else}}
-      <i>No tags</i>
-      {{/if}}
+      <p class="post-infos">
+        <i class="icon-comment"></i>
+        Comments(0)
+        <i class="icon-tag"></i>
+        {{#if tags}}
+          <span class="tags-list">
+            {{#each inArray tags}}
+              <i class="tag">{{value}}</i>,
+            {{/each}}
+          </span>
+        {{else}}
+          <i>No tags</i>
+        {{/if}}
+      </p>
     </div>
   </div>
 </template>

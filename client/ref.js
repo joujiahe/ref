@@ -29,6 +29,21 @@ Template.posts.posts = function() {
   return Posts.find(sel, {limit: Session.get("queryLimit"), sort: {createdAt: -1}});
 };
 
+Template.post.inArray = function (tags) {
+  result = [];
+  for (var key in tags) result.push({name:key,value:tags[key]});
+  return result;
+};
+
+Template.post.events({
+  'mousedown .tag': function () {
+    if (Session.equals('tagFilter', this.value))
+      Session.set('tagFilter', null);
+    else
+      Session.set('tagFilter', this.value);
+  }
+});
+
 // Return an event map for a text input.
 var entry_event = function(selector) {
   return 'keyup '+selector+', keydown '+selector+', focusout '+selector;
