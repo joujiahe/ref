@@ -21,6 +21,10 @@
 }
 
 /* Overide bootstrap style */
+h1 {
+  color: #000;
+}
+
 body {
   padding-top: 80px;
 }
@@ -38,5 +42,16 @@ body {
 }
 
 .navbar .nav {
+	margin-left: 20px;
 	padding-top: 15px;
+}
+
+.navbar .nav > li > a.selected {
+	color: #fff;
+	font-weight: normal;
+}
+
+.navbar .nav > li > a:hover {
+	color: #000;
+	font-weight: bold;
 }

@@ -3,6 +3,7 @@
  */
 Session.set("queryLimitOffset", 130);
 Session.set("queryLimit", ($(window).height()/Session.get("queryLimitOffset"))|0);
+Session.setDefault("tagFilter", null);
 
 var postsHandle = null;
 // Always be subscribed to the todos for the selected list.
@@ -20,8 +21,12 @@ Template.posts.loading = function () {
 };
 
 // Posts
-Template.posts.posts = function(){
-  return Posts.find({}, {limit: Session.get("queryLimit"), sort: {createdAt: -1}});
+Template.posts.posts = function() {
+  var sel = {};
+  var tagFilter = Session.get('tagFilter');
+  if(tagFilter)
+    sel.tags = tagFilter;
+  return Posts.find(sel, {limit: Session.get("queryLimit"), sort: {createdAt: -1}});
 };
 
 // Return an event map for a text input.
@@ -151,21 +156,30 @@ Template.post.events({
 Template.tag_filter.tags = function () {
   var tag_infos = [];
   var total_count = 0;
+  var tagFilterCount = 0;
 
+  var tagFilter = Session.get('tagFilter');
+  
   Posts.find({}).forEach(function (post) {
     _.each(post.tags, function (tag) {
+      if (tagFilter && tagFilter===tag) {
+        tagFilterCount++;
+        return;
+      }
       var tag_info = _.find(tag_infos, function (x) { return x.tag === tag; });
-      if (!tag_info)
-        tag_infos.push({tag: tag, count: 1});
+      if (!tag_info) 
+          tag_infos.push({tag: tag, count: 1});
       else
         tag_info.count++;
     });
     total_count++;
   });
-
   //tag_infos = _.sortBy(tag_infos, function (x) { return -x.count; });
   tag_infos = _.sortBy(tag_infos, function () { return 0.5 - Math.random(); });
-  tag_infos.unshift({tag: null, count: total_count});
+  if(!tagFilter)
+    tag_infos.unshift({tag: null, count: total_count});
+  else
+    tag_infos.unshift({tag: tagFilter, count: tagFilterCount});
 
   return tag_infos.slice(0,6);
 };
@@ -175,14 +189,20 @@ Template.tag_filter.tag_text = function () {
 };
 
 Template.tag_filter.selected = function () {
-  return Session.equals('tag_filter', this.tag) ? 'selected' : '';
+  return Session.equals('tagFilter', this.tag) ? 'selected label label-info' : '';
 };
 
 Template.tag_filter.events({
   'mousedown .tag': function () {
-    if (Session.equals('tag_filter', this.tag))
-      Session.set('tag_filter', null);
+    if (Session.equals('tagFilter', this.tag))
+      Session.set('tagFilter', null);
     else
-      Session.set('tag_filter', this.tag);
+      Session.set('tagFilter', this.tag);
+  },
+  'mouseenter .tag': function (evt) {
+    //$(evt.target).addClass('selected label label-info');
+  },
+  'mouseleave .tag': function (evt) {
+    //$(evt.target).removeClass('selected label label-info');
   }
 });
