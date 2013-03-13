@@ -1,6 +1,10 @@
 /* CSS declarations go here */
 
 /* General style */
+body {
+	background-image: url(/white_wall_hash.png);
+}
+
 .login-button {
 	padding-top: 20px;
 }
@@ -9,6 +13,7 @@
 }
 
 .post {
+	background-color: #fff;
 }
 
 .post-content {
