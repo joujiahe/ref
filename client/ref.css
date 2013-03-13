@@ -32,6 +32,10 @@ body {
 	margin-left: 20px;
 }
 
+.post-infos .comments {
+	cursor: not-allowed;
+}
+
 .post-infos .tags-list {
 }
 
