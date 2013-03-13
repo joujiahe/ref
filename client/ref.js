@@ -122,14 +122,14 @@ Template.post.getScore = function(score) {
 Template.post.events({
   'click .up': function() {
     if(!Meteor.userId()) {
-      alert('Please login first!');
+      alert('Please login before vote!');
       return false;
     }
     if(!this.scoredUsers) {
       this.scoredUsers = [];
     }
     else if($.inArray(Meteor.userId(), this.scoredUsers)!=-1) {
-      alert('You already voted!');
+      alert('You have already voted!');
       return false;
     }
     
@@ -137,14 +137,14 @@ Template.post.events({
   },
   'click .down': function() {
     if(!Meteor.userId()) {
-      alert('Please login first!');
+      alert('Please login before vote!');
       return false;
     }
     if(!this.scoredUsers) {
       this.scoredUsers = [];
     }
     else if($.inArray(Meteor.userId(), this.scoredUsers)!=-1) {
-      alert('You already voted!');
+      alert('You have already voted!');
       return false;
     }
 
