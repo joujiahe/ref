@@ -40,8 +40,10 @@ Template.posts.posts = function() {
 Template.comments.comments = function() {
   var sel = {};
   var selectedPost = Session.get('selectedPost');
+  if(!selectedPost)
+    return null;
   sel.parentId = selectedPost;
-  return Posts.find(sel, {limit: Session.get("queryLimit")-1, sort: {createdAt: 1}});
+  return Posts.find(sel, {limit: Session.get("queryLimit"), sort: {createdAt: 1}});
 };
 
 Template.post.inArray = function (tags) {
