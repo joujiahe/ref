@@ -25,6 +25,7 @@
         <div class="row">
           <div class="span9">
             {{> posts}}
+            {{> comments}}
           </div>
         </div>
       </div>
@@ -66,8 +67,13 @@
   {{#if currentUser}}
     <p><input type="text" id="title" placeholder="Title here..."/></p>
     <p><textarea id="content" placeholder="URL here..."/></textarea></p>
+    {{#if inPost}}
+    <p id="tags"></p>
+    <a class="submit btn" value="Submit">Comment</a>
+    {{else}}
     <p><input type="text" id="tags" placeholder="Tags here..."/></p>
     <a class="submit btn" value="Submit">Submit</a>
+    {{/if}}
   {{else}}
     <p>Please login before post...</p>
   {{/if}}
@@ -82,9 +88,16 @@
   {{/each}}
   {{/if}}
 </template>
-
+<template name="comments">
+  {{#each comments}}
+    {{> post}}
+  {{/each}}
+</template>
 <template name="post">
   <div class="post well">
+    {{#if selected}}
+    <i class="icon-remove pull-right"></i>
+    {{/if}}
     <div class="score-buttons pull-left">
       <a class="up btn btn-danger btn-small"><i class="icon-thumbs-up" value="Up" /></i></a><br />
       {{getScore}} <br />
@@ -99,9 +112,11 @@
 	{{/if}}
       </p>
       <p>{{content}}</p>
+      {{#if isComment}}
+      {{else}}
       <p class="post-infos">
         <i class="icon-comment"></i>
-        <span class="comments">Comments(0)</span>
+        <span class="comments">Comments({{commentsCount}})</span>
         <i class="icon-tag"></i>
         {{#if tags}}
           <span class="tags-list">
@@ -113,6 +128,7 @@
           <i>No tags</i>
         {{/if}}
       </p>
+      {{/if}}
     </div>
   </div>
 </template>

@@ -4,6 +4,7 @@
 Session.set("queryLimitOffset", 130);
 Session.set("queryLimit", ($(window).height()/Session.get("queryLimitOffset"))|0);
 Session.setDefault("tagFilter", null);
+Session.setDefault("selectedPost", null);
 
 var postsHandle = null;
 // Always be subscribed to the todos for the selected list.
@@ -24,9 +25,23 @@ Template.posts.loading = function () {
 Template.posts.posts = function() {
   var sel = {};
   var tagFilter = Session.get('tagFilter');
+  var selectedPost = Session.get('selectedPost');
   if(tagFilter)
     sel.tags = tagFilter;
+  if(selectedPost) {
+    sel._id = selectedPost;
+  } else {
+    sel.parentId = null;
+  }
+
   return Posts.find(sel, {limit: Session.get("queryLimit"), sort: {createdAt: -1}});
+};
+
+Template.comments.comments = function() {
+  var sel = {};
+  var selectedPost = Session.get('selectedPost');
+  sel.parentId = selectedPost;
+  return Posts.find(sel, {limit: Session.get("queryLimit")-1, sort: {createdAt: 1}});
 };
 
 Template.post.inArray = function (tags) {
@@ -39,12 +54,30 @@ Template.post.isUrl = function() {
   return (this.content.substr(0, 7) == "http://" || this.content.substr(0, 8) == "https://");
 }
 
+Template.post.isComment = function() {
+  return this.parentId? true: false;
+}
+
+Template.post.commentsCount = function() {
+  var sel = {};
+  sel.parentId = this._id;
+  var comments = Posts.find(sel);
+  return comments.count();
+};
+
+Template.post.selected = function() {
+  return Session.equals('selectedPost',this._id);
+}
+
 Template.post.events({
   'mousedown .tag': function () {
     if (Session.equals('tagFilter', this.value))
       Session.set('tagFilter', null);
     else
       Session.set('tagFilter', this.value);
+  },
+  'click .icon-remove': function () {
+    Session.set('selectedPost', null);
   }
 });
 
@@ -80,6 +113,7 @@ var post_submit = function(){
   var time = Date.now() / 1000;
   Posts.insert({
     userId: Meteor.userId(),
+    parentId: Session.get('selectedPost'),
     title: titleEntry.value,
     content: contentEntry.value,
     tags: tagsEntry.value? tagsEntry.value.split(','): [],
@@ -98,6 +132,10 @@ Template.entry.events({
   //ok: function(evt) {
   'click .submit': post_submit,
 });
+
+Template.entry.inPost = function() {
+    return Session.get('selectedPost')? true: false;
+};
 
 Template.post.createdDatetime = function() {
   var dt = new Date(this.createdAt * 1000);
@@ -168,6 +206,10 @@ Template.post.events({
     }
 
     Posts.update(this._id, {$inc: {score: -1}, $addToSet: {scoredUsers: Meteor.userId()}});
+  },
+  'click .comments': function() {
+    //alert(this._id);
+    Session.set('selectedPost', this._id);
   }
 });
 
@@ -217,6 +259,8 @@ Template.tag_filter.events({
       Session.set('tagFilter', null);
     else
       Session.set('tagFilter', this.tag);
+
+    Session.set('selectedPost', null);
   },
   'mouseenter .tag': function (evt) {
     //$(evt.target).addClass('selected label label-info');
